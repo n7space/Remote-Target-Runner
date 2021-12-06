@@ -92,7 +92,7 @@ class UartIoHandler(IoHandler):
                 + str(self.address)
                 + ":"
                 + str(self.port)
-                + ",reuseaddr,fork &"
+                + " &"
             )
             os.system(socatLinkString)
         except os.error:
