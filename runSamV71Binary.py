@@ -77,7 +77,7 @@ consoleIoHandler = {   "uartId" : consoleIoHandlerID,
                     "baudrate" : consoleIoHandlerBaudrate,
                     "port" : consoleIoHandlerPort,
                     "path" : consoleIoHandlerPath,
-                    "vPortName" : consoleIoHandlerVPortName,
+                    "vPortName" : None,
                     "verbose" : consoleIoHandlerVerbose}
 
 uart4IoHandler = {
