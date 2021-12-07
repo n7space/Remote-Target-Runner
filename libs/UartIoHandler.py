@@ -50,14 +50,18 @@ class UartIoHandler(IoHandler):
         uartDevice,
         uartBaud,
         port,
-        vPortName,
+        vPortName=None,
         parity=PARITY_NONE,
         debug=False,
     ):
         self.address = address
         self.port = port
 
-        self.vPortName = vPortName
+        if vPortName == None:
+            self.redirectTraficToPty = False
+        else :
+            self.vPortName = vPortName
+            self.redirectTraficToPty = True
 
         self.username = username
         self.password = password
@@ -167,8 +171,11 @@ class UartIoHandler(IoHandler):
             if self.__checkIfLaunched():
                 raise RuntimeError("UartIoHandler is already running elsewhere.")
             self._spawnRemoteSocat()
-            self._openUartSocket()
-            self._linkSocketWithVirtualTty()
+            
+            if self.redirectTraficToPty:
+                self._linkSocketWithVirtualTty()
+            else:
+                self._openUartSocket()
 
         except Exception:
             if self.sshUart is not None and self.sshUart._transport is not None:
