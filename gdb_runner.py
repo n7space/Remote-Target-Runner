@@ -21,12 +21,16 @@
 
 import binascii
 import atexit
+import configparser
 import time
 import timeout_decorator
+import os
 
 from libs.GdbInterface import GdbInterface
 from libs.GdbServerInvoker import GdbServerInvoker
 from libs.ConnectionConfig import ConnectionConfig
+
+from configparser import ConfigParser
 
 class gdb_runner:
     __gdbSrv = None
@@ -34,27 +38,23 @@ class gdb_runner:
     __ioConsole = None
     __ioUart4 = None
 
-    __gdbSrvConfig = dict()
-    __gdbConfig = dict()
-    __consoleConfig = dict()
-    __uart4Config = dict()
+    __config = ConfigParser()
 
-    def __init__(self, gdbSrvConfig, gdbConfig, consoleConfig, uart4Config):
-        self.__gdbSrvConfig = gdbSrvConfig
-        self.__gdbConfig = gdbConfig
-        self.__consoleConfig = consoleConfig
-        self.__uart4Config = uart4Config
+    def __init__(self, configPath, vConsole, vUart4):
+        self.__config = ConfigParser(os.environ)
+        self.__config.read(configPath)
+        self.__config.set('ioConsole', 'vPortName', vConsole)
+        self.__config.set('ioUart4', 'vPortName', vUart4)
 
     def __log(msg, *args, **kwargs):
         print("GDB-RUNNER:", msg, *args, **kwargs)
 
-
     def __invokeGdbServer(self):
         self.__log("Starting GDB server...")
         srv = GdbServerInvoker(
-            self.__gdbSrvConfig["path"],
-            self.__gdbSrvConfig["args"],
-            ConnectionConfig.fromConfig(self.__gdbSrvConfig),
+            self.__config.get('gdbServer', 'path'),
+            self.__config.get('gdbServer', 'args'),
+            ConnectionConfig.fromConfig(self.__config['gdbServer']),
             verbosity=True,
         )
         srv.open()
@@ -65,9 +65,9 @@ class gdb_runner:
     def __invokeGdb(self):
         self.__log("Staring GDB...")
         gdb = GdbInterface(
-            self.__gdbConfig["address"],
-            self.__gdbConfig["path"],
-            verbose=self.__gdbConfig["verbose"],
+            self.__config.get('gdb' ,'address'),
+            self.__config.get('gdb' ,'path'),
+            verbose=self.__config.get('gdb' ,'verbose'),
         )
         gdb.launch()
         return gdb
@@ -93,11 +93,13 @@ class gdb_runner:
 
     def __dumpLogLambda(self, io, logPath):
         with open(logPath, "wb") as logFile:
-            while True:
-                data = io.receive(io.getOptimalReadSize())
-                if len(data) == 0:
-                    return
-                logFile.write(data)
+            if io.handle != None:
+                print("Dumping log for", io)
+                while True:
+                    data = io.receive(io.getOptimalReadSize())
+                    if len(data) == 0:
+                        return
+                    logFile.write(data)
 
 
     def __dumpLog(self, io, logPath, timeout):
@@ -139,12 +141,12 @@ class gdb_runner:
             self.__gdb = self.__invokeGdb()
 
         if self.__ioConsole is None:
-            self.__ioConsole = self.__openIoHandler(self.__consoleConfig)
+            self.__ioConsole = self.__openIoHandler(self.__config['ioConsole'])
         else:
             self.__ioConsole.reset()
 
         if self.__ioUart4 is None:
-            self.__ioUart4 = self.__openIoHandler(self.__uart4Config)
+            self.__ioUart4 = self.__openIoHandler(self.__config['ioUart4'])
         else:
             self.__ioUart4.reset()
 
