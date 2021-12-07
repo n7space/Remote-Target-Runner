@@ -177,8 +177,8 @@ class gdb_runner:
         self.__gdb.execCmd("bt", pollUntilDone=True)
         self.__gdb.execCmd("info reg", pollUntilDone=True)
         self.__log("Downloading logs...")
-        self.__dumpLog(self.__ioConsole, "vConsoleLog.txt", int(100))
-        self.__dumpLog(self.__ioUart4, "vUart4log.txt", int(100))
+        self.__dumpLog(self.__ioConsole, "vConsoleLog.txt", 0)
+        self.__dumpLog(self.__ioUart4, "vUart4log.txt", 0)
         self.__log("Log dumped.")
 
 
