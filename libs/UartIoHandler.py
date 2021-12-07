@@ -92,7 +92,7 @@ class UartIoHandler(IoHandler):
             socatLinkString = (
                 "socat pty,link="
                 + self.vPortName
-                +",raw,echo=0,fork tcp:"
+                +",raw,echo=0 tcp:"
                 + str(self.address)
                 + ":"
                 + str(self.port)
@@ -109,7 +109,7 @@ class UartIoHandler(IoHandler):
             + debugFlag
             + " tcp-l:"
             + str(self.port)
-            + ",reuseaddr "
+            + ",reuseaddr,fork "
             + self.uartDevice
             + ",raw,echo=0,b"
             + str(self.uartBaud)
@@ -176,6 +176,8 @@ class UartIoHandler(IoHandler):
                 self._linkSocketWithVirtualTty()
             else:
                 self._openUartSocket()
+                self.handle = self.uartSocket.fileno()
+                self.opened = True
 
         except Exception:
             if self.sshUart is not None and self.sshUart._transport is not None:
@@ -183,9 +185,6 @@ class UartIoHandler(IoHandler):
                 self.sshUart.close()
             self.sshUart = None
             raise
-
-        self.handle = self.uartSocket.fileno()
-        self.opened = True
 
     def checkAndForceClose(self):
         psout = (
