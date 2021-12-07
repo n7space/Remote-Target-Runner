@@ -88,7 +88,7 @@ class UartIoHandler(IoHandler):
             socatLinkString = (
                 "socat pty,link="
                 + self.vPortName
-                +",waitslave tcp:"
+                +",raw,echo=0,fork tcp:"
                 + str(self.address)
                 + ":"
                 + str(self.port)
