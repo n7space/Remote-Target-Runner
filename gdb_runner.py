@@ -174,6 +174,8 @@ class gdb_runner:
             except Exception as e:
                 self.__log(e)
                 self.__gdb.stop()
+            except KeyboardInterrupt:
+                print("Application killed by user")
 
         self.__log("Execution finished.")
         self.__gdb.execCmd("bt", pollUntilDone=True)
