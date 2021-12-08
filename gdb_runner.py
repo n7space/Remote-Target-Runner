@@ -169,7 +169,7 @@ class gdb_runner:
         if self.__gdb.isRunning():
             try:
                 self.__log("Waiting for GDB to finish...")
-                if not self.__gdb.waitForFinish(timeout=int(100)):
+                if not self.__gdb.waitForFinish(timeout=int(1000)):
                     self.__gdb.stop()
             except Exception as e:
                 self.__log(e)
@@ -179,8 +179,8 @@ class gdb_runner:
         self.__gdb.execCmd("bt", pollUntilDone=True)
         self.__gdb.execCmd("info reg", pollUntilDone=True)
         self.__log("Downloading logs...")
-        self.__dumpLog(self.__ioConsole, "vConsoleLog.txt", 0)
-        self.__dumpLog(self.__ioUart4, "vUart4log.txt", 0)
+        self.__dumpLog(self.__ioConsole, "vConsoleLog.txt", int(100))
+        self.__dumpLog(self.__ioUart4, "vUart4log.txt", int(100))
         self.__log("Log dumped.")
 
 
