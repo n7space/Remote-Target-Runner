@@ -55,9 +55,9 @@ class UartIoHandler(IoHandler):
         debug=False,
     ):
         self.address = address
-        self.port = port
+        self.port = int(port)
 
-        if vPortName == None:
+        if vPortName == '':
             self.redirectTraficToPty = False
         else :
             self.vPortName = vPortName
