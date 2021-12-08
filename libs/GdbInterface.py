@@ -170,9 +170,16 @@ class GdbInterface:
         except GdbTimeoutError:
             return False
 
+    def terminate(self):
+        if self.running:
+            self.gdbmi.interrupt_gdb()
+            self.gdbmi.exit
+            self.running = False
+
     def stop(self):
         if self.running:
             self.gdbmi.interrupt_gdb()
+
             self.waitForFinish()
         self.running = False
 

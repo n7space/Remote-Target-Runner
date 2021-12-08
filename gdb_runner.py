@@ -94,7 +94,6 @@ class gdb_runner:
     def __dumpLogLambda(self, io, logPath):
         with open(logPath, "wb") as logFile:
             if not io.wasTrafficRedirrectedToPty():
-                print(io)
                 while True:
                     data = io.receive(io.getOptimalReadSize())
                     if len(data) == 0:
@@ -175,7 +174,14 @@ class gdb_runner:
                 self.__log(e)
                 self.__gdb.stop()
             except KeyboardInterrupt:
-                print("Application killed by user")
+                self.__log("Execution terminated by prressing ^C")
+                self.__gdb.terminate()
+                self.__log("Gdb client terminated")
+                self.__log("Downloading logs...")
+                self.__dumpLog(self.__ioConsole, "vConsoleLog.txt", int(100))
+                self.__dumpLog(self.__ioUart4, "vUart4log.txt", int(100))
+                self.__log("Log dumped.")
+                return
 
         self.__log("Execution finished.")
         self.__gdb.execCmd("bt", pollUntilDone=True)
