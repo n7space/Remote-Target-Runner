@@ -254,3 +254,6 @@ class UartIoHandler(IoHandler):
         while len(self.receive(8 * 1024)) > 0:
             pass  # read all cached incoming bytes
         super().reset()
+
+    def wasTrafficRedirrectedToPty(self):
+        return self.redirectTraficToPty;
