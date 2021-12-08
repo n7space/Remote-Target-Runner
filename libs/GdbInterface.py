@@ -142,7 +142,7 @@ class GdbInterface:
         output = []
         while True:
             try:
-                response = self.gdbmi.get_gdb_response(timeout_sec=20)
+                response = self.gdbmi.get_gdb_response(timeout_sec=1000)
             except timeout_decorator.TimeoutError as error:
                 raise GdbTimeoutError(error)
             self.printr(response)
