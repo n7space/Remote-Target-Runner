@@ -3,13 +3,14 @@
 import os
 import sys
 import getopt
+from pathlib import Path
 
 import gdb_runner
 from libs.GdbServerInvoker import GdbServerInvoker
 
 vConsole = ''
 vUart4 = ''
-configPath = 'Config/taste.cfg'
+configPath = str(Path(__file__).resolve().parent) + '/Config/taste.cfg'
 
 try :
     binary = sys.argv[1]
