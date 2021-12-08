@@ -93,8 +93,8 @@ class gdb_runner:
 
     def __dumpLogLambda(self, io, logPath):
         with open(logPath, "wb") as logFile:
-            if io.handle != None:
-                print("Dumping log for", io)
+            if not io.wasTrafficRedirrectedToPty():
+                print(io)
                 while True:
                     data = io.receive(io.getOptimalReadSize())
                     if len(data) == 0:
