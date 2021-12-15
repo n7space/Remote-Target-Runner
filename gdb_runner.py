@@ -40,11 +40,11 @@ class gdb_runner:
 
     __config = ConfigParser()
 
-    def __init__(self, configPath, vConsole, vUart4):
+    def __init__(self, configPath, virtualConsole, virtualUart4):
         self.__config = ConfigParser(os.environ)
         self.__config.read(configPath)
-        self.__config.set('ioConsole', 'virtualDeviceName', vConsole)
-        self.__config.set('ioUart4', 'virtualDeviceName', vUart4)
+        self.__config.set('ioConsole', 'virtualDeviceName', virtualConsole)
+        self.__config.set('ioUart4', 'virtualDeviceName', virtualUart4)
 
     def __log(msg, *args, **kwargs):
         print("GDB-RUNNER:", msg, *args, **kwargs)
@@ -131,6 +131,11 @@ class gdb_runner:
             self.__gdbSrv.close()
             self.__gdbSrv = None
 
+    def __dumpIOLogs(self):
+        self.__log("Downloading logs...")
+        self.__dumpLog(self.__ioConsole, "virtualConsoleLog.txt", int(100))
+        self.__dumpLog(self.__ioUart4, "virtualUart4log.txt", int(100))
+        self.__log("Log dumped.")
 
     def initTestEnv(self):
         if self.__gdbSrv is None:
@@ -177,20 +182,13 @@ class gdb_runner:
                 self.__log("Execution terminated by prressing ^C")
                 self.__gdb.terminate()
                 self.__log("Gdb client terminated")
-                self.__log("Downloading logs...")
-                self.__dumpLog(self.__ioConsole, "vConsoleLog.txt", int(100))
-                self.__dumpLog(self.__ioUart4, "vUart4log.txt", int(100))
-                self.__log("Log dumped.")
+                self.__dumpIOLogs()
                 return
 
         self.__log("Execution finished.")
         self.__gdb.execCmd("bt", pollUntilDone=True)
         self.__gdb.execCmd("info reg", pollUntilDone=True)
-        self.__log("Downloading logs...")
-        self.__dumpLog(self.__ioConsole, "vConsoleLog.txt", int(100))
-        self.__dumpLog(self.__ioUart4, "vUart4log.txt", int(100))
-        self.__log("Log dumped.")
-
+        self.__dumpIOLogs()
 
     def __readMemoryFromGdb(self, env, address, size=4):
         self.initTestEnv(env)
