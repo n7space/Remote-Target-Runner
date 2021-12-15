@@ -91,7 +91,7 @@ class gdb_runner:
         return handler
 
 
-    def __dumpLogLambda(self, io, logPath):
+    def __receiveAndWriteLog(self, io, logPath):
         with open(logPath, "wb") as logFile:
             if not io.wasTrafficRedirrectedToPty():
                 while True:
@@ -104,13 +104,13 @@ class gdb_runner:
     def __dumpLog(self, io, logPath, timeout):
         @timeout_decorator.timeout(timeout)
         def dumpLogTimeout(io, logPath):
-            self.__dumpLogLambda(io, logPath)
+            self.__receiveAndWriteLog(io, logPath)
 
         if timeout != 0:
             dumpLogTimeout(io, logPath)
 
         else:
-            self.__dumpLogLambda(io, logPath)
+            self.__receiveAndWriteLog(io, logPath)
 
 
     def __cleanup(self):#**ignored):
