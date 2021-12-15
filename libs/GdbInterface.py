@@ -64,7 +64,7 @@ class GdbInterface:
         self.running = False
         self.launched = False
 
-    def printv(self, *args, **kwargs):
+    def printVerbose(self, *args, **kwargs):
         if self.verbose:
             msg = args[0].replace("\\n", "\n")
             msg = msg.replace("\\t", "\t")
@@ -75,7 +75,7 @@ class GdbInterface:
             entry["payload"] for entry in response if entry["type"] == "console"
         ]
         for msg in console_msgs:
-            self.printv(msg, end="")
+            self.printVerbose(msg, end="")
         errors = [
             entry["payload"]["msg"] for entry in response if entry["message"] == "error"
         ]
@@ -92,7 +92,7 @@ class GdbInterface:
         return response
 
     def execCmdAsync(self, command):
-        self.printv(" " + command)
+        self.printVerbose(" " + command)
 
         try:
             response = self.gdbmi.write(command)
