@@ -70,7 +70,7 @@ class GdbInterface:
             msg = msg.replace("\\t", "\t")
             print(msg, *args[1:], **kwargs)
 
-    def printr(self, response):
+    def printFormatedResponse(self, response):
         console_msgs = [
             entry["payload"] for entry in response if entry["type"] == "console"
         ]
@@ -101,7 +101,7 @@ class GdbInterface:
                 "Invalid command supplied to execCmd: " + str(command)
             )
 
-        self.printr(response)
+        self.printFormatedResponse(response)
         return response
 
     def monitor(self, command, pollUntilDone=False):
@@ -145,7 +145,7 @@ class GdbInterface:
                 response = self.gdbmi.get_gdb_response(timeout_sec=1000)
             except timeout_decorator.TimeoutError as error:
                 raise GdbTimeoutError(error)
-            self.printr(response)
+            self.printFormatedResponse(response)
             output += response
             if self._checkIfExecutionStopped(response):
                 break
