@@ -8,8 +8,8 @@ from pathlib import Path
 import gdb_runner
 from libs.GdbServerInvoker import GdbServerInvoker
 
-vConsole = ''
-vUart4 = ''
+virtualConsole = ''
+virtualUart4 = ''
 configPath = str(Path(__file__).resolve().parent) + '/Config/taste.cfg'
 
 try :
@@ -28,10 +28,10 @@ for opt, arg in opts:
     if opt in ("-c", "--config"):
         configPath = arg
     elif opt in ("-v", "--vConsole"):
-        vConsole = arg
+        virtualConsole = arg
     elif opt in ("-u", "--uart"):
-        vUart4 = arg
+        virtualUart4 = arg
 
-gdbRunner = gdb_runner.gdb_runner(configPath, vConsole, vUart4)
+gdbRunner = gdb_runner.gdb_runner(configPath, virtualConsole, virtualUart4)
 gdbRunner.startOnGdb(binary)
 gdbRunner.waitToFinishOnGdb()
