@@ -43,8 +43,8 @@ class gdb_runner:
     def __init__(self, configPath, vConsole, vUart4):
         self.__config = ConfigParser(os.environ)
         self.__config.read(configPath)
-        self.__config.set('ioConsole', 'vPortName', vConsole)
-        self.__config.set('ioUart4', 'vPortName', vUart4)
+        self.__config.set('ioConsole', 'virtualDeviceName', vConsole)
+        self.__config.set('ioUart4', 'virtualDeviceName', vUart4)
 
     def __log(msg, *args, **kwargs):
         print("GDB-RUNNER:", msg, *args, **kwargs)
@@ -81,10 +81,10 @@ class gdb_runner:
                 config["address"],
                 config["username"],
                 config["password"],
-                config["path"],
+                config["hardwareDevicePath"],
                 config["baudrate"],
                 config["port"],
-                config["vPortName"],
+                config["virtualDeviceName"],
                 debug=config["verbose"],
             )
         handler.open()

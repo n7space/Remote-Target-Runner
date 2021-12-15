@@ -50,17 +50,17 @@ class UartIoHandler(IoHandler):
         uartDevice,
         uartBaud,
         port,
-        vPortName=None,
+        virtualDeviceName=None,
         parity=PARITY_NONE,
         debug=False,
     ):
         self.address = address
         self.port = int(port)
 
-        if vPortName == '':
+        if virtualDeviceName == '':
             self.redirectTraficToPty = False
         else :
-            self.vPortName = vPortName
+            self.virtualDeviceName = virtualDeviceName
             self.redirectTraficToPty = True
 
         self.username = username
@@ -91,7 +91,7 @@ class UartIoHandler(IoHandler):
         try:
             socatLinkString = (
                 "socat pty,link="
-                + self.vPortName
+                + self.virtualDeviceName
                 +",raw,echo=0 tcp:"
                 + str(self.address)
                 + ":"
