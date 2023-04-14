@@ -21,7 +21,8 @@
 
 from __future__ import print_function
 import time
-from pygdbmi.gdbcontroller import GdbController, GdbTimeoutError
+from pygdbmi.gdbcontroller import GdbController
+from pygdbmi.constants import GdbTimeoutError
 
 import timeout_decorator
 
@@ -108,7 +109,7 @@ class GdbInterface:
         return self.execCmd(command, pollUntilDone)
 
     def launch(self):
-        self.gdbmi = GdbController(self.path)
+        self.gdbmi = GdbController([self.path, "--interpreter=mi3"])
         time.sleep(1)
 
         self.monitor("target extended-remote " + self.address)

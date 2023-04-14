@@ -26,10 +26,14 @@ import os
 
 import paramiko
 import scp
-from serial import PARITY_EVEN, PARITY_NONE, PARITY_ODD
 
 from .IoHandler import IoHandler
+from enum import Enum
 
+class Parity(Enum):
+    PARITY_EVEN = 1,
+    PARITY_ODD = 2,
+    PARITY_NONE = 3
 
 class UartIoHandler(IoHandler):
     """
@@ -50,9 +54,9 @@ class UartIoHandler(IoHandler):
         uartDevice,
         uartBaud,
         port,
-        virtualDeviceName=None,
-        parity=PARITY_NONE,
-        debug=False,
+        virtualDeviceName = None,
+        parity = Parity.PARITY_NONE,
+        debug = False,
     ):
         self.address = address
         self.port = int(port)
@@ -118,11 +122,12 @@ class UartIoHandler(IoHandler):
             + "_gdb.log"
         )
         sttyArgs = str(self.uartBaud) + " cs8 -cstopb -crtscts "
-        if self.parity == PARITY_EVEN:
+
+        if self.parity == Parity.PARITY_EVEN:
             sttyArgs += "parenb -parodd"
-        elif self.parity == PARITY_ODD:
+        elif self.parity == Parity.PARITY_ODD:
             sttyArgs += "parenb parodd"
-        elif self.parity == PARITY_NONE:
+        elif self.parity == Parity.PARITY_NONE:
             sttyArgs += "-parenb"
         else:
             raise RuntimeError("Invalid parity settings supplied.")
