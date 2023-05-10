@@ -76,6 +76,19 @@ class gdb_runner:
     def __openIoHandler(self, config):
         self.__log("Starting IO Handler...")
 
+        from libs.UartIoHandler import Parity
+        parityConfig: str = str(config["parity"])
+        parity: Parity
+
+        if str(parityConfig) == "PARITY_EVEN":
+            parity = Parity.PARITY_EVEN
+        elif str(parityConfig) == "PARITY_ODD":
+            parity = Parity.PARITY_ODD
+        elif str(parityConfig) == "PARITY_NONE":
+            parity = Parity.PARITY_NONE
+        else:
+            raise RuntimeError("Invalid parity settings supplied in configuration.")
+
         from libs.UartIoHandler import UartIoHandler
         handler = UartIoHandler(
                 config["address"],
@@ -85,7 +98,8 @@ class gdb_runner:
                 config["baudrate"],
                 config["port"],
                 config["virtualDeviceName"],
-                debug=config["verbose"],
+                parity,
+                debug=config["verbose"]
             )
         handler.open()
         return handler

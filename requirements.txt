@@ -1,0 +1,7 @@
+future==0.18.3
+paramiko==3.1.0
+pygdbmi==0.11.0.0
+scp==0.14.5
+serial==0.0.97
+timeout-decorator==0.5.0
+typing==3.5.2.2
